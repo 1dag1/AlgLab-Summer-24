@@ -8,42 +8,36 @@ def solve(instance: Instance) -> Solution:
     """
     numbers = instance.numbers
     model = cp_model.CpModel()
-
+    
+    #variables
     x = [model.NewBoolVar(f"x_{i}") for i in range(len(numbers))]
     y = [model.NewBoolVar(f"y_{j}") for j in range(len(numbers))]
+    
+    #constraints
     model.Add(sum(x) == 1)
     model.Add(sum(y) == 1)
 
-    for i in range(len(numbers)):
-        for j in range(len(numbers)):
-            tmp = y[1]
-            tmp2 = x[1]
-            model.Maximize((x[i] * (numbers[i] - numbers [j])
-
-    #for i in range(len(numbers))) - sum(y[i] * numbers[i] for i in range(len((numbers)))))
-
-
-
+    #objective
+    model.Maximize(sum(n * numbers[i] for n, i in zip(x, range(len(numbers)))) - sum(m * numbers[k] for m, k in zip(y, range(len(numbers)))))
 
     solver = cp_model.CpSolver()
     solver.parameters.log_search_progress = True
     status = solver.Solve(model)
     assert status == cp_model.OPTIMAL
 
-
-
     selected_values1 = [solver.Value(var) for var in x]
     selected_values2 = [solver.Value(var) for var in y]
 
-
+    solNum1 = []
+    solNum2 = []
     for i in range(len(numbers)):
         if (selected_values1[i]  == 1):
-            numbers[0] = instance.numbers[i]
+            solNum1 = instance.numbers[i]
         if (selected_values2[i] == 1):
-            numbers[1] = instance.numbers[i]
+            solNum2 = instance.numbers[i]
 
-
-
+    numbers[0] = solNum1
+    numbers[-1] = solNum2
 
     return Solution(
         number_a=numbers[0],

@@ -36,17 +36,14 @@ class MultiKnapsackSolver:
         self.x = {}
         for i in range(len(self.capacities)):
             for j in range(len(self.items)):
-        # self.x[i, j] = [self.model.NewBoolVar(f"x_{i}_{j}") for j in range(len(self.capacities))]
                 self.x[i, j] = self.model.NewBoolVar(f"x_{i}_{j}")
         #Constraints
         for i in range(len(self.capacities)):
             self.model.Add(sum(self.x[i, j] * self.items[j].weight for j in range(len(self.items))) <= self.capacities[i])
-            #self.model.Add(sum(x[i][j] * i.weight for x, i in zip(self.x, self.items)) <= self.capacities[j])
         for j in range(len(self.items)):
             self.model.Add(sum(self.x[i, j] for i in range(len(self.capacities))) <= 1)
 
-        for j in range(len(self.items)):
-            self.model.Maximize(sum(self.items[j].value * self.x[i, j] for j in range(len(self.items)) for i in range(len(self.capacities))))
+        self.model.Maximize(sum(self.items[j].value * self.x[i, j] for j in range(len(self.items)) for i in range(len(self.capacities))))
 
     def solve(self, timelimit: float = math.inf) -> Solution:
         """
@@ -70,14 +67,12 @@ class MultiKnapsackSolver:
         knapsack = list()
         for i in range(len(self.capacities)):
             knapsack.append(list())
-        k = 0
-       # selected_values1 = [self.solver.Value(var) for var in x]
+
         for i in range(len(self.capacities)):
             for j in range(len(self.items)):
                 tmp4 = self.solver.Value(self.x[i, j])
                 if (self.solver.Value(self.x[i, j]) == 1):
 
                     knapsack[i].append(self.items[j])
-                    k = k+1
 
-        return Solution(knapsacks=knapsack)  # empty solution
+        return Solution(knapsacks=knapsack) 

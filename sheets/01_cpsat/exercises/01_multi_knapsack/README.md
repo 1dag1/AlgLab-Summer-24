@@ -45,6 +45,15 @@ item $i$ that indicates whether the item is in the knapsack ($x_i=1$) or not
 _You can write your answer directly in this markdown file or refer to a separate
 file here._
 
+Solution:
+
+$$\max \sum_{i \in I} \sum_{j \in J} v_i x_{ij}$$
+
+$$\text{s.t.} \sum_{i \in I} w_i x_{ij} \leq C_j \quad \forall j\in K$$
+
+$$ \sum_{j \in K} x_{ij} \leq 1 \quad \forall i\in I$$
+
+$$\forall i\in I \quad \forall j\in K: x_{ij} \in \{0,1\}$$
 <!-- ADD YOUR ANSWER HERE -->
 
 ### Implementation of a Solver in CP-SAT

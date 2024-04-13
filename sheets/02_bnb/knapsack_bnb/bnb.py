@@ -5,7 +5,6 @@ It is modular such that the performance difference between different strategies 
 explored. All strategies will be exponential in the worst case, but some strategies
 will still result in significantly smaller branch and bound trees than others.
 """
-
 import typing
 
 from .bnb_nodes import BnBNode, NodeFactory, NodeStatus

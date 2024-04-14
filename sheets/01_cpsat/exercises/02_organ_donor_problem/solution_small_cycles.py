@@ -35,7 +35,7 @@ class CycleLimitingCrossoverTransplantSolver:
 
         for i in allDonors:
             for j in allRecipients:
-                self.model.Add(2 * self.x[i, j] + int(Recipient(id=j) in database.get_compatible_recipients(Donor(id=i))) != 2)
+                self.model.Add(self.x[i, j] <= int(Recipient(id=j) in database.get_compatible_recipients(Donor(id=i))))
 
         #Only one transplantation per donor
         for i in allDonors:
@@ -49,7 +49,7 @@ class CycleLimitingCrossoverTransplantSolver:
 
         for i in allDonors:
             recipientID = self.database.get_partner_recipient(Donor(id=i)).id
-            self.model.Add(sum(self.x[i, j] + self.x[k, recipientID] for j in allRecipients for k in allDonors) != 1)
+            self.model.Add(sum(self.x[i, j] for j in allRecipients) <= sum(self.x[k, recipientID]for k in allDonors))
 
         #Max one Donation for one representative
         for j in allRecipients:
@@ -57,9 +57,8 @@ class CycleLimitingCrossoverTransplantSolver:
             jDonorPartners = self.database.get_partner_donors(Recipient(id=j))
             for donorPartner in jDonorPartners:
                 JDPartnerIDS.append(donorPartner.id)
-            self.model.Add((sum(self.x[dPartnerID, k] for dPartnerID in JDPartnerIDS for k in allRecipients) + sum(2*self.x[i ,j] for i in allDonors)) <= 3)
-            self.model.Add((sum(self.x[dPartnerID, k] for dPartnerID in JDPartnerIDS for k in allRecipients) + sum(2 *self.x[i, j] for i in allDonors)) != 2)
-            self.model.Add((sum(self.x[dPartnerID, k] for dPartnerID in JDPartnerIDS for k in allRecipients) + sum(2 *self.x[i, j] for i in allDonors)) != 1)
+            self.model.Add((sum(self.x[dPartnerID, k] for dPartnerID in JDPartnerIDS for k in allRecipients) == sum(
+                self.x[i, j] for i in allDonors)))
         self.solver = CpSolver()
         self.solver.parameters.log_search_progress = True
 

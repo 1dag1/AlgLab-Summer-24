@@ -19,35 +19,35 @@ class CrossoverTransplantSolver:
         allDonors = range(1, len(self.database.get_all_donors()) + 1)
         allRecipients = range(1, len(self.database.get_all_recipients()) + 1)
 
+        compatible_recipients = {i: self.database.get_compatible_recipients(Donor(id=i)) for i in allDonors}
+        compatible_donors = {j: self.database.get_compatible_donors(Recipient(id=j)) for j in allRecipients}
+
         #Variables
         self.x = {}
         for i in allDonors:
             for j in allRecipients:
-                self.x[i, j] = self.model.NewBoolVar(f"x_{i}_{j}")
+                if Recipient(id=j) in compatible_recipients[i]:
+                    self.x[i, j] = self.model.NewBoolVar(f"x_{i}_{j}")
+
 
         #Objective
-        self.model.Maximize(sum(self.x[i, j] for i in allDonors for j in allRecipients))
+        self.model.Maximize(sum(self.x[i, j.id] for i in allDonors for j in compatible_recipients[i]))
 
         #Constrains
-        #only compatible transplantations
-
-        for i in allDonors:
-            for j in allRecipients:
-                self.model.Add(self.x[i, j] <= int(Recipient(id=j) in database.get_compatible_recipients(Donor(id=i))))
 
         #Only one transplantation per donor
         for i in allDonors:
-            self.model.Add(sum(self.x[i, j] for j in allRecipients) <= 1)
+            self.model.Add(sum(self.x[i, j.id] for j in compatible_recipients[i]) <= 1)
 
         #Only one transplantation per recipient
         for j in allRecipients:
-            self.model.Add(sum(self.x[i, j] for i in allDonors) <= 1)
+            self.model.Add(sum(self.x[i.id, j] for i in compatible_donors[j]) <= 1)
 
         #Only donations when friend gets transplantation as well
 
         for i in allDonors:
             recipientID = self.database.get_partner_recipient(Donor(id=i)).id
-            self.model.Add(sum(self.x[i, j] for j in allRecipients) <= sum(self.x[k, recipientID]for k in allDonors))
+            self.model.Add(sum(self.x[i, j.id] for j in compatible_recipients[i]) <= sum(self.x[k.id, recipientID]for k in compatible_donors[recipientID]))
 
         #Max one Donation for one representative
         for j in allRecipients:
@@ -55,7 +55,7 @@ class CrossoverTransplantSolver:
             jDonorPartners = self.database.get_partner_donors(Recipient(id=j))
             for donorPartner in jDonorPartners:
                 JDPartnerIDS.append(donorPartner.id)
-            self.model.Add((sum(self.x[dPartnerID, k] for dPartnerID in JDPartnerIDS for k in allRecipients) == sum(self.x[i ,j] for i in allDonors)))
+            self.model.Add((sum(self.x[dPartnerID, k.id] for dPartnerID in JDPartnerIDS for k in compatible_recipients[dPartnerID]) == sum(self.x[i.id ,j] for i in compatible_donors[j])))
 
         self.solver = CpSolver()
         self.solver.parameters.log_search_progress = True
@@ -74,12 +74,12 @@ class CrossoverTransplantSolver:
         # TODO: Implement me!
         status = self.solver.Solve(self.model)
         allDonors = range(1, len(self.database.get_all_donors()) + 1 )
-        allRecipients = range(1, len(self.database.get_all_recipients()) + 1 )
+
 
         donations = []
         for i in allDonors:
-            for j in allRecipients:
-                if ((self.solver.Value(self.x[i, j])) == 1):
-                    donations.append(Donation(donor= Donor(id= i), recipient= Recipient(id=j)))
+            for j in self.database.get_compatible_recipients(Donor(id=i)):
+                if ((self.solver.Value(self.x[i, j.id])) == 1):
+                    donations.append(Donation(donor= Donor(id= i), recipient= Recipient(id=j.id)))
 
         return Solution(donations=donations)

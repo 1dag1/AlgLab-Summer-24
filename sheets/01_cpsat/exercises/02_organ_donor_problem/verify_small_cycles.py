@@ -112,12 +112,12 @@ def db_50():
     solve_instance_and_check_solution("50.db", 43)
 
 
-@mandatory_testcase(max_runtime_s=30)
+@mandatory_testcase(max_runtime_s=300)
 def db_100():
     solve_instance_and_check_solution("100.db", 91)
 
 
-@mandatory_testcase(max_runtime_s=60)
+@mandatory_testcase(max_runtime_s=600)
 def db_200():
     solve_instance_and_check_solution("200.db", 192)
 

@@ -74,21 +74,16 @@ Solution:
 
 $$\max \sum_{i=1}^{n} \sum_{j=1}^{m} x_{ij}$$
 
-$$\text{s.t.} \quad 2 \cdot x_{ij} + f_{ij} \neq 2 \quad \forall i \in \{1, \ldots, n\} \quad \forall j \in \{1, \ldots, m\}$$
 
 $$ \sum_{j=1}^{m} x_{ij} \leq 1 \quad \forall i \in \{1, \ldots, n\}$$
 
 $$ \sum_{i=1}^{n} x_{ij} \leq 1 \quad \forall j \in \{1, \ldots, m\}$$
 
-$$ \sum_{i=1}^{n} x_{ij} + \sum_{k=1}^{n} x_{kl} \neq 1 \quad \forall j \in \{1, \ldots, m\} \quad \forall l \in Partner \\ von \\ i $$
+$$ \sum_{i=1}^{n} x_{ij} \leq \sum_{k=1}^{n} x_{kl} \quad \forall j \in \{1, \ldots, m\} \quad \forall l \in Partner \\ von \\ i $$
 
-$$ \sum_{k=1}^{m} x_{lk} + \sum_{i=1}^{n} 2 \cdot x_{ij} \leq 3 \quad \forall j \in \{1, \ldots, m\} \quad \forall l \in Partner \\ von \\ j $$
+$$ \sum_{k=1}^{m} x_{lk} = \sum_{i=1}^{n} 2 \cdot x_{ij} \quad \forall j \in \{1, \ldots, m\} \quad \forall l \in Partner \\ von \\ j $$
 
-$$ \sum_{k=1}^{m} x_{lk} + \sum_{i=1}^{n} 2 \cdot x_{ij} \neq 2 \quad \forall j \in \{1, \ldots, m\} \quad \forall l \in Partner \\ von \\ j $$
-
-$$ \sum_{k=1}^{m} x_{lk} + \sum_{i=1}^{n} 2 \cdot x_{ij} \neq 1 \quad \forall j \in \{1, \ldots, m\} \quad \forall l \in Partner \\ von \\ j $$
-
-$$\forall i \in \{1, \ldots, n\}  \quad j \in \{1, \ldots, m\}: x_{ij} \in \{0,1\}$$
+$$\forall i \in \{1, \ldots, n\}  \quad j \in \{1, \ldots, m\}: x_{ij} \in \{0,1\}$$ 
 
 <!-- ADD YOUR ANSWER HERE -->
 

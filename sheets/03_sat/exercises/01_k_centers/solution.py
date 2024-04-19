@@ -2,6 +2,7 @@ import math
 from typing import Dict, Iterable, List
 
 import networkx as nx
+from ortools.math_opt.python import solution
 from pysat.solvers import Solver as SATSolver
 
 
@@ -18,6 +19,8 @@ class KCentersSolver:
         Check the networkx documentation for more information!
         """
         self.graph = graph
+        self.numNodes = self.graph.number_of_nodes()
+        self.UpperBound = None
         # TODO: Implement me!
 
     def solve_heur(self, k: int) -> List[int]:
@@ -27,9 +30,25 @@ class KCentersSolver:
         (nodes will be ints in the given graph).
         """
         # TODO: Implement me!
-        centers = None
-        return centers
+        centers = []
 
+        #First Center
+        centers.append(1)
+
+
+        maxDistSol = None
+        maxDist = 0
+        numCenters = 1
+
+        while numCenters < k:
+            for node in range(1, self.numNodes + 1):
+                dijkstraSol = nx.multi_source_dijkstra(self.graph, centers, node)
+                minDistfromCenters = dijkstraSol[0]
+                if (minDistfromCenters > maxDist):
+                    maxDistNode = node
+            centers.append(maxDistNode)
+            numCenters += 1
+        return centers
 
     def solve(self, k: int) -> List[int]:
         """
@@ -40,5 +59,39 @@ class KCentersSolver:
         centers = self.solve_heur(k)
 
         # TODO: Implement me!
+        allNodes = set(x for x in range(1, self.graph.number_of_nodes() + 1))
+        centerSet = set(centers)
+
+        noCenterNodes = allNodes.difference(centerSet)
+        variables = [x for x in allNodes]
+        for x in centers:
+            variables.append(x)
+        sat.add_atmost(variables, k)
+        maxDistNode= None
+        maxDist = 0
+        nodesInRadius = []
+        for node in range(1, self.numNodes + 1):
+            dijkstraSol = nx.multi_source_dijkstra(self.graph, centers, node)
+            minDistfromCenters = dijkstraSol[0]
+            if (minDistfromCenters > maxDist):
+                maxDistNode = node
+                maxDist = dijkstraSol[0]
+
+        for node in range(1, self.numNodes + 1):
+            nodeDistance = nx.single_source_dijkstra(self.graph, maxDistNode, node)[0]
+            if (nodeDistance < maxDist):
+                nodesInRadius.append(node)
+
+        sat.add_clause(nodesInRadius)
+
+
+
+        if sat.solve():
+            solution = sat.get_model()
+
+        centers.clear()
+        for x in solution:
+            if x > 0:
+                centers.append(x)
 
         return centers

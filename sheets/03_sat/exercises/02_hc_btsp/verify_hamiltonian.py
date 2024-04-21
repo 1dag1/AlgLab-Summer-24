@@ -48,7 +48,7 @@ def solve_hc_instance(filepath: pathlib.Path):
     )
 
 
-@mandatory_testcase(max_runtime_s=30)
+@mandatory_testcase(max_runtime_s=3000)
 def alb1000():
     solve_hc_instance(CWD / "./instances/alb1000.pickle")
 

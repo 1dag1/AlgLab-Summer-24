@@ -58,7 +58,7 @@ def draw_k_centers_solution(graph: nx.Graph, centers: List[int]):
 
 if __name__ == "__main__":
     # feel free to change these parameters:
-    INSTANCE = "att48.pickle"
+    INSTANCE = "pcb442.pickle"
     NUM_CENTERS = 3
 
     graph: nx.Graph = None

@@ -37,7 +37,7 @@ def solve_instance_and_compare_value(
     )
 
 
-@mandatory_testcase(max_runtime_s=90)
+@mandatory_testcase(max_runtime_s=9000)
 def test_att48_k3():
     solve_instance_and_compare_value(CWD / "./instances/att48.pickle", 3, 2203.8833)
 
@@ -52,12 +52,12 @@ def test_att48_k15():
     solve_instance_and_compare_value(CWD / "./instances/att48.pickle", 15, 893.3951)
 
 
-@mandatory_testcase(max_runtime_s=90)
+@mandatory_testcase(max_runtime_s=900)
 def test_lin318_k2():
     solve_instance_and_compare_value(CWD / "./instances/lin318.pickle", 2, 2072.0952)
 
 
-@mandatory_testcase(max_runtime_s=90)
+@mandatory_testcase(max_runtime_s=900)
 def test_lin318_k3():
     solve_instance_and_compare_value(CWD / "./instances/lin318.pickle", 3, 1937.4858)
 

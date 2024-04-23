@@ -46,6 +46,16 @@ coding.
 _You can write your answer directly in this markdown file or refer to a separate
 file here._
 
+$$
+\sum_{v \in V} x_v \leq k
+$$
+
+$$
+\forall i \in {1,...n} : \exists x_j : \quad x_j \land \vert d_{ij} \leq C \vert
+$$
+
+$$ \forall x_{ij} \in \{0, 1\} $$
+
 <!-- ADD YOUR ANSWER HERE -->
 
 ### Task 2: Implementation of a Solver using a card-SAT-solver
